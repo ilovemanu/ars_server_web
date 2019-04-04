@@ -1,0 +1,34 @@
+<div class="container">
+  <section class="title-container">
+    <h3>Search Flights</h3>
+  </section>
+
+  <section class="form-container">
+    <form class="search-form" (ngSubmit)="onSubmit()" #inputForm="ngForm">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="From" [(ngModel)]="airPort" name="airPort">
+      </mat-form-field>
+
+      <!--<mat-form-field class="example-full-width">-->
+      <!--<textarea matInput placeholder="Leave a comment"></textarea>-->
+      <!--</mat-form-field>-->
+
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Choose departure date" [(ngModel)]="departureDate" name="departureDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <button type="submit" mat-raised-button color="primary">Search</button>
+
+    </form>
+  </section>
+
+  <div *ngIf="flights" class="flights-container">
+    <div *ngFor="let f of flights">
+      <span>{{f}}</span>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

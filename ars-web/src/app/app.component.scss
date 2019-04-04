@@ -1,0 +1,27 @@
+.container {
+
+  .title-container {
+    text-align: center;
+  }
+  .form-container {
+    //text-align: center;
+
+    .search-form {
+      min-width: 50px;
+      max-width: 150px;
+      width: 100%;
+    }
+
+    .example-full-width {
+      width: 100%;
+    }
+  }
+
+  .flights-container {
+    margin-top: 30px;
+  }
+}
+
+
+
+
