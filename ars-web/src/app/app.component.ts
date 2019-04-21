@@ -9,16 +9,23 @@ import {ApiService} from './service/api.service';
 export class AppComponent {
   title = 'ars-web';
   flights: string[];
-  airPort: string;
+  departureAirPort: string;
+  arrvingAirport: string;
   departureDate: Date;
+  arrivingDate: Date;
+  tripType = 'roundTrip';
+  seatClass = 'coach'
 
   constructor(private api: ApiService) {
   }
 
 
   onSubmit() {
-    this.api.findDeparture(this.airPort, this.departureDate).subscribe(data => {
+    this.api.findDeparture(this.departureAirPort, this.departureDate).subscribe(data => {
       this.flights = data;
+
+      console.log(this.tripType);
+      console.log(this.seatClass);
     });
   }
 }

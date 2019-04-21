@@ -5,8 +5,30 @@
 
   <section class="form-container">
     <form class="search-form" (ngSubmit)="onSubmit()" #inputForm="ngForm">
+      <mat-form-field>
+        <mat-label>One Way Or Round Trip</mat-label>
+        <select matNativeControl [(ngModel)]="tripType" name="tripType">
+          <option value="roundTrip" selected="selected">Round Trip</option>
+          <option value="oneWay">One Way</option>
+        </select>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Seat Class</mat-label>
+        <select matNativeControl [(ngModel)]="seatClass" name="seatClass">
+          <option value="coach" selected="selected">Coach</option>
+          <option value="firstClass">First Class</option>
+        </select>
+      </mat-form-field>
+
+
+
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="From" [(ngModel)]="airPort" name="airPort">
+        <input matInput placeholder="Departure" [(ngModel)]="departureAirPort" name="departureAirPort">
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Arriving" [(ngModel)]="arrvingAirport" name="arrvingAirport">
       </mat-form-field>
 
       <!--<mat-form-field class="example-full-width">-->
@@ -14,9 +36,16 @@
       <!--</mat-form-field>-->
 
       <mat-form-field>
-        <input matInput [matDatepicker]="picker" placeholder="Choose departure date" [(ngModel)]="departureDate" name="departureDate">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
+        <input matInput [matDatepicker]="departurePicker" placeholder="Outbound Date" [(ngModel)]="departureDate" name="departureDate">
+        <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
+        <mat-datepicker #departurePicker></mat-datepicker>
+      </mat-form-field>
+
+
+      <mat-form-field *ngIf="tripType === 'roundTrip'">
+        <input matInput [matDatepicker]="arrivingPicker" placeholder="Inbound Date" [(ngModel)]="arrivingDate" name="arrivingDate">
+        <mat-datepicker-toggle matSuffix [for]="arrivingPicker"></mat-datepicker-toggle>
+        <mat-datepicker #arrivingPicker></mat-datepicker>
       </mat-form-field>
 
       <button type="submit" mat-raised-button color="primary">Search</button>

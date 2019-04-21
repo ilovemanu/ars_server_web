@@ -13,7 +13,7 @@ export class ApiService {
   }
 
   public findDeparture(airPort: string, departureDate: Date): Observable<string[]> {
-    // console.log(`${this.departureDateUrl}/${airPort}/${departureDate}`);
+    // console.log(`${this.departureDateUrl}/${departureAirPort}/${departureDate}`);
     const departDate = this.datePipe.transform(departureDate,'yyyy_MM_dd');
     return this.http.get<string[]>(`${this.departureDateUrl}/${airPort}/${departDate}`);
   }
