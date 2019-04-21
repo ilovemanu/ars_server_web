@@ -6,7 +6,6 @@ package com.gompeisquad.parser.flight;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
-import com.gompeisquad.parser.utils.Saps;
 
 /**
  * This class holds values pertaining to a single Flight. Class member attributes
@@ -14,8 +13,8 @@ import com.gompeisquad.parser.utils.Saps;
  * XML received from the server to Java primitives. Attributes are accessed via getter and
  * setter methods.
  *
- * @author alex
- * @version 1 2019-03-16
+ * @author alex and liz
+ * @version 1.1 2019-04-19
  * @since 2019-03-16
  *
  */
@@ -42,6 +41,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      */
     private LocalDateTime mDepartureTime;
     private LocalDateTime mArrivalTime;
+    private LocalDateTime mDepartureLocalTime;
+    private LocalDateTime mArrivalLocalTime;
     /*
      * firstClass and coachPrice
      * Set to String for now.
@@ -90,41 +91,31 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
                   String firstClassPrice, String coachPrice,
                   int firstClassReserved, int coachReserved) {
 
-        if (!isValidString(airplane)) {
+        if (!isValidString(airplane))
             throw new IllegalArgumentException(airplane);
-        }
-        if (!isValidInt(flightTime)) {
+        if (!isValidInt(flightTime))
             throw new IllegalArgumentException(Integer.toString(flightTime));
-        }
-        if (!isValidString(number)) {
+        if (!isValidString(number))
             throw new IllegalArgumentException(number);
-        }
-        if (!isValidCode(departureAirport)) {
+        if (!isValidCode(departureAirport))
             throw new IllegalArgumentException(departureAirport);
-        }
-        if (!isValidCode(arrivalAirport)) {
+        if (!isValidCode(arrivalAirport))
             throw new IllegalArgumentException(arrivalAirport);
-        }
         // departure time
-        if (!isValidTime(departureTime)) {
+        if (!isValidTime(departureTime))
             throw new IllegalArgumentException(departureTime.toString());
-        }
         // arrival time
-        if (!isValidTime(arrivalTime)) {
+        if (!isValidTime(arrivalTime))
             throw new IllegalArgumentException(arrivalTime.toString());
-        }
-        if (!isValidString(firstClassPrice)) {
+        if (!isValidString(firstClassPrice))
             throw new IllegalArgumentException(firstClassPrice);
-        }
-        if (!isValidString(coachPrice)) {
+        if (!isValidString(coachPrice))
             throw new IllegalArgumentException(coachPrice);
-        }
-        if (!isValidSeats(firstClassReserved)) {
+        if (!isValidSeats(firstClassReserved))
             throw new IllegalArgumentException(Double.toString(firstClassReserved));
-        }
-        if (!isValidSeats(coachReserved)) {
+        if (!isValidSeats(coachReserved))
             throw new IllegalArgumentException(Double.toString(coachReserved));
-        }
+
 
         mAirplane = airplane;
         mFlightTime = flightTime;
@@ -137,6 +128,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
         mFirstClassPrice = firstClassPrice;
         mCoachReserved = coachReserved;
         mFirstClassReserved = firstClassReserved;
+
     }
 
     /**
@@ -165,6 +157,28 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
     }
 
     /**
+     * Convert object to printable local time string
+     */
+    public String toLocalString() {
+        StringBuffer sb = new StringBuffer();
+
+        sb.append(mAirplane).append(", ");
+        sb.append(mFlightTime).append(", ");
+        sb.append(mNumber).append(", ");
+        sb.append(mDepartureAirport).append(", ");
+        sb.append(mDepartureLocalTime).append(", ");
+        sb.append(mArrivalAirport).append(", ");
+        sb.append(mArrivalLocalTime).append(", ");
+        sb.append(mCoachPrice).append(", ");
+        sb.append(mCoachReserved).append(", ");
+        sb.append(mFirstClassPrice).append(", ");
+        sb.append(mFirstClassReserved);
+
+        return sb.toString();
+    }
+
+
+    /**
      * Set and get the airplane info
      *
      * @param airplane The airplane of the flight
@@ -172,13 +186,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return airplane info
      */
     public void airplane(String airplane) {
-        if (isValidString(airplane)) {
+        if (isValidString(airplane))
             mAirplane = airplane;
-        } else {
+        else
             throw new IllegalArgumentException(airplane);
-        }
     }
-
     public String airplane() {
         return mAirplane;
     }
@@ -191,13 +203,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return flightTime
      */
     public void flightTime(int flightTime) {
-        if (isValidInt(flightTime)) {
+        if (isValidInt(flightTime))
             mFlightTime = flightTime;
-        } else {
+        else
             throw new IllegalArgumentException(Integer.toString(flightTime));
-        }
     }
-
     public int flightTime() {
         return mFlightTime;
     }
@@ -210,13 +220,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return number
      */
     public void number(String number) {
-        if (isValidString(number)) {
+        if (isValidString(number))
             mNumber = number;
-        } else {
+        else
             throw new IllegalArgumentException(number);
-        }
     }
-
     public String number() {
         return mNumber;
     }
@@ -229,13 +237,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return departureAirport
      */
     public void departureAirport(String departureAirport) {
-        if (isValidCode(departureAirport)) {
+        if (isValidCode(departureAirport))
             mDepartureAirport = departureAirport;
-        } else {
+        else
             throw new IllegalArgumentException(departureAirport);
-        }
     }
-
     public String departureAirport() {
         return mDepartureAirport;
     }
@@ -248,13 +254,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return arrivalAirport
      */
     public void arrivalAirport(String arrivalAirport) {
-        if (isValidCode(arrivalAirport)) {
+        if (isValidCode(arrivalAirport))
             mArrivalAirport = arrivalAirport;
-        } else {
+        else
             throw new IllegalArgumentException(arrivalAirport);
-        }
     }
-
     public String arrivalAirport() {
         return mArrivalAirport;
     }
@@ -267,15 +271,19 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return departureTime
      */
     public void departureTime(LocalDateTime departureTime) {
-        if (isValidTime(departureTime)) {
+        if (isValidTime(departureTime))
             mDepartureTime = departureTime;
-        } else {
+        else
             throw new IllegalArgumentException(departureTime.toString());
-        }
     }
-
     public LocalDateTime departureTime() {
         return mDepartureTime;
+    }
+    public void departureLocalTime(LocalDateTime departureTime){
+        mDepartureLocalTime = departureTime;
+    }
+    public LocalDateTime departureLocalTime(){
+        return mDepartureLocalTime;
     }
 
     /**
@@ -286,15 +294,19 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return arrivalTime
      */
     public void arrivalTime(LocalDateTime arrivalTime) {
-        if (isValidTime(arrivalTime)) {
+        if (isValidTime(arrivalTime))
             mArrivalTime = arrivalTime;
-        } else {
+        else
             throw new IllegalArgumentException(arrivalTime.toString());
-        }
     }
-
     public LocalDateTime arrivalTime() {
         return mArrivalTime;
+    }
+    public void arrivalLocalTime(LocalDateTime arrivalTime){
+        mArrivalLocalTime = arrivalTime;
+    }
+    public LocalDateTime arrivalLocalTime(){
+        return mArrivalLocalTime;
     }
 
     /**
@@ -305,13 +317,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return coachPrice
      */
     public void coachPrice(String coachPrice) {
-        if (isValidString(coachPrice)) {
+        if (isValidString(coachPrice))
             mCoachPrice = coachPrice;
-        } else {
+        else
             throw new IllegalArgumentException(coachPrice);
-        }
     }
-
     public String coachPrice() {
         return mCoachPrice;
     }
@@ -324,13 +334,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return firstClassPrice
      */
     public void firstClassPrice(String firstClassPrice) {
-        if (isValidString(firstClassPrice)) {
+        if (isValidString(firstClassPrice))
             mFirstClassPrice = firstClassPrice;
-        } else {
+        else
             throw new IllegalArgumentException(firstClassPrice);
-        }
     }
-
     public String firstClassPrice() {
         return mFirstClassPrice;
     }
@@ -343,13 +351,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return coachReserved
      */
     public void coachReserved(Integer coachReserved) {
-        if (isValidSeats(coachReserved)) {
+        if (isValidSeats(coachReserved))
             mCoachReserved = coachReserved;
-        } else {
+        else
             throw new IllegalArgumentException(Integer.toString(coachReserved));
-        }
     }
-
     public int coachReserved() {
         return mCoachReserved;
     }
@@ -362,16 +368,15 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return firstClassReserved
      */
     public void firstClassReserved(Integer firstClassReserved) {
-        if (isValidSeats(firstClassReserved)) {
+        if (isValidSeats(firstClassReserved))
             mFirstClassReserved = firstClassReserved;
-        } else {
+        else
             throw new IllegalArgumentException(Integer.toString(firstClassReserved));
-        }
     }
-
     public int firstClassReserved() {
         return mFirstClassReserved;
     }
+
 
     /**
      * Compare two flights
@@ -396,6 +401,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
         return 0;
     }
 
+
+
     /**
      * Check for invalid strings
      *
@@ -403,9 +410,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return false if null or empty, else assume valid and return true
      */
     public boolean isValidString(String str) {
-        if (str == null || str.length() == 0) {
+        if (str == null || str.length() == 0)
             return false;
-        }
         return true;
     }
 
@@ -416,9 +422,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return false if negative
      */
     public boolean isValidInt(int num) {
-        if (num < 0) {
+        if(num < 0)
             return false;
-        }
         return true;
     }
 
@@ -429,9 +434,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @return false if negative or off limits , else assume valid and return true
      */
     public boolean isValidSeats(int seats) {
-        if (seats < 0 || seats > Integer.MAX_VALUE) {
+        if (seats < 0 || seats > Integer.MAX_VALUE)
             return false;
-        }
         return true;
     }
 
@@ -441,11 +445,10 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @param code is the airport code to validate
      * @return false if null or not 3 characters in length, else assume valid and return true
      */
-    public boolean isValidCode(String code) {
+    public boolean isValidCode (String code) {
         // If we don't have a 3 character code it can't be valid valid
-        if ((code == null) || (code.length() != 3)) {
+        if ((code == null) || (code.length() != 3))
             return false;
-        }
         return true;
     }
 
@@ -455,14 +458,14 @@ public class Flight implements Comparable<Flight>, Comparator<Flight> {
      * @param time is the time for departure or arrival
      * @return false if null or exceeds limits, else assume valid and return true
      */
-    public boolean isValidTime(LocalDateTime time) {
-        if ((time == null)
-                || time.getYear() != Saps.DEFAULT_YEAR
-                || time.getMonthValue() != Saps.DEFAULT_MONTH
-                || time.getDayOfMonth() > Saps.MAX_DATE
-                || time.getDayOfMonth() < Saps.MIN_DATE) {
-            return false;
-        }
+    public boolean isValidTime (LocalDateTime time) {
+//        if ((time == null)
+//                || time.getYear() != Saps.DEFAULT_YEAR
+//                || time.getMonthValue() != Saps.DEFAULT_MONTH
+//                || time.getDayOfMonth() > Saps.MAX_DATE
+//                || time.getDayOfMonth() < Saps.MIN_DATE)
+//            return false;
         return true;
     }
+
 }

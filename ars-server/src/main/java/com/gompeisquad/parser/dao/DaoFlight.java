@@ -1,22 +1,19 @@
 package com.gompeisquad.parser.dao;
 
+import com.gompeisquad.parser.flight.Flight;
+import com.gompeisquad.parser.flight.Flights;
+import org.w3c.dom.CharacterData;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import com.gompeisquad.parser.flight.Flight;
-import com.gompeisquad.parser.flight.Flights;
-import org.w3c.dom.CharacterData;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author blake and alex
@@ -29,11 +26,13 @@ public class DaoFlight {
     /**
      * Builds a collection of flights from flights described in XML
      * <p>
-     * Parses an XML string to read each of the flights and adds each valid flight to the collection. The method uses Java DOM (Document
-     * Object Model) to convert from XML to Java primitives.
+     * Parses an XML string to read each of the flights and adds each valid flight
+     * to the collection. The method uses Java DOM (Document Object Model) to convert
+     * from XML to Java primitives.
      * <p>
-     * Method iterates over the set of Flights nodes in the XML string and builds a flight object from the XML node string and add the
-     * Flight object instance to the Flights collection.
+     * Method iterates over the set of Flights nodes in the XML string and builds
+     * a flight object from the XML node string and add the Flight object instance to
+     * the Flights collection.
      *
      * @param xmlFlights XML string containing set of flights
      * @return [possibly empty] collection of Flights in the xml string
@@ -60,6 +59,7 @@ public class DaoFlight {
         }
 
         return flights;
+
     }
 
     /**
@@ -109,7 +109,6 @@ public class DaoFlight {
         departureTimeString = getCharacterDataFromElement(elementDepartureTime);
         departureTime = LocalDateTime.parse(departureTimeString, formatter);
 
-
         /*
          * <arrival></arrival>
          */
@@ -132,6 +131,7 @@ public class DaoFlight {
         Element elementCoach = (Element) elementSeating.getElementsByTagName("Coach").item(0);
         coachPrice = elementCoach.getAttributeNode("Price").getValue();
         coachReserved = Integer.parseInt(getCharacterDataFromElement(elementCoach));
+
 
         /**
          * Instantiate an empty Flight object and initialize with data from XML node

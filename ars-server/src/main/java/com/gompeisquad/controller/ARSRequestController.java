@@ -7,6 +7,7 @@ import java.util.List;
 import com.gompeisquad.parser.dao.ServerInterface;
 import com.gompeisquad.parser.flight.Flight;
 import com.gompeisquad.parser.flight.Flights;
+import com.gompeisquad.parser.system.FlightController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +29,15 @@ public class ARSRequestController {
     @ResponseBody
     public List<String> searchForDeparture(@PathVariable String airPort, @PathVariable String departureDate) {
         List<String> lFlight = new ArrayList<>();
-        Flights flights = ServerInterface.INSTANCE.getFlights(TEAM_NAME, airPort.toUpperCase(), departureDate);
-        Collections.sort(flights);
-
-        for (Flight flight : flights) {
-            lFlight.add(flight.toString());
-        }
+//        Flights flights = ServerInterface.INSTANCE.getFlights(TEAM_NAME, airPort.toUpperCase(), departureDate);
+//        FlightController controller = new FlightController();
+//        controller.searchDepTimeFlight(departureCode, outBoundTime, arrivalCode, seatClass, outBoundTime);
+//
+//        Collections.sort(flights);
+//
+//        for (Flight flight : flights) {
+//            lFlight.add(flight.toString());
+//        }
 
 //        List<String> list =  new ArrayList<>();
 //        list.add(airPort);

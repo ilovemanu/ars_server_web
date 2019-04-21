@@ -1,27 +1,21 @@
-/**
- *
- */
 package com.gompeisquad.parser.dao;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import com.gompeisquad.parser.airplane.Airplanes;
 import com.gompeisquad.parser.airport.Airports;
 import com.gompeisquad.parser.flight.Flights;
 import com.gompeisquad.parser.utils.QueryFactory;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
  * HTTP GET and HTTP POSTS
  *
- * @author blake and alex
- * @version 1 2019-03-15
+ * @author blake, alex and liz
+ * @version 1.1 2019-04-11
  * @since 2016-02-24
  *
  */
@@ -89,6 +83,7 @@ public enum ServerInterface {
         xmlAirports = result.toString();
         airports = DaoAirport.addAll(xmlAirports);
         return airports;
+
     }
 
     /**
@@ -147,6 +142,7 @@ public enum ServerInterface {
         xmlAirplanes = result.toString();
         airplanes = DaoAirplane.addAll(xmlAirplanes);
         return airplanes;
+
     }
 
     /**
@@ -155,9 +151,11 @@ public enum ServerInterface {
      *
      * @param teamName is teamName
      * @param departureCode is the code for departure airport
+     * @param searchType is the searching type for departure date and arrival date searching
      * @return
      */
-    public Flights getFlights(String teamName, String departureCode, String departureTime) {
+    public Flights getFlights(String teamName, String departureCode,
+                              String departureTime, String searchType) {
 
         URL url;
         HttpURLConnection connection;
@@ -173,7 +171,8 @@ public enum ServerInterface {
              * Create an HTTP connection to the server for a GET
              * QueryFactory provides the parameter annotations for the HTTP GET query string
              */
-            url = new URL(mUrlBase + QueryFactory.getFlights(teamName, departureCode, departureTime));
+            url = new URL(mUrlBase
+                    + QueryFactory.getFlights(teamName, departureCode, departureTime, searchType));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", teamName);
@@ -205,7 +204,9 @@ public enum ServerInterface {
         xmlFlights = result.toString();
         flights = DaoFlight.addAll(xmlFlights);
         return flights;
+
     }
+
 
     /**
      * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
@@ -310,4 +311,63 @@ public enum ServerInterface {
         }
         return true;
     }
+
+    /**
+     * Reserve seat using flight number and seat type
+     * @param teamName
+     * @param xmlFlights is the xml containing user defined flight number and seat type
+     * @return true if the server was successfully updated
+     */
+    public boolean reserveSeat(String teamName, String xmlFlights) {
+
+        URL url;
+        HttpURLConnection connection;
+
+        try {
+
+            /**
+             * Create an HTTP connection to the server for a POST
+             */
+            url = new URL(mUrlBase);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("User-Agent", teamName);
+
+            String params = QueryFactory.reserve(teamName);
+
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+
+            DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
+            writer.writeBytes(params + xmlFlights);
+            writer.flush();
+            writer.close();
+
+            /**
+             * If response code of SUCCESS read the XML string returned
+             * line by line to build the full return string
+             */
+            int responseCode = connection.getResponseCode();
+            System.out.println("\nSending 'POST' to buy ticket");
+            System.out.println(("\nResponse Code : " + responseCode));
+
+            // check if responseCode is between 200 and 300
+            // if true, reservation is successful
+            if (responseCode >= HttpURLConnection.HTTP_OK
+                    && responseCode < 300) {
+
+                System.out.println("Reservation is successful!");
+            }
+            // TODO: if code does not look good (ie. 304, 400), return false
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 }
