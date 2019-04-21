@@ -28,7 +28,7 @@
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Arriving" [(ngModel)]="arrvingAirport" name="arrvingAirport">
+        <input matInput placeholder="Arriving" [(ngModel)]="arrivalAirPort" name="arrivalAirPort">
       </mat-form-field>
 
       <!--<mat-form-field class="example-full-width">-->
@@ -36,16 +36,16 @@
       <!--</mat-form-field>-->
 
       <mat-form-field>
-        <input matInput [matDatepicker]="departurePicker" placeholder="Outbound Date" [(ngModel)]="departureDate" name="departureDate">
+        <input matInput [matDatepicker]="departurePicker" placeholder="Outbound Date" [(ngModel)]="outboundDate" name="outboundDate">
         <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
         <mat-datepicker #departurePicker></mat-datepicker>
       </mat-form-field>
 
 
       <mat-form-field *ngIf="tripType === 'roundTrip'">
-        <input matInput [matDatepicker]="arrivingPicker" placeholder="Inbound Date" [(ngModel)]="arrivingDate" name="arrivingDate">
-        <mat-datepicker-toggle matSuffix [for]="arrivingPicker"></mat-datepicker-toggle>
-        <mat-datepicker #arrivingPicker></mat-datepicker>
+        <input matInput [matDatepicker]="inboundPicker" placeholder="Inbound Date" [(ngModel)]="inboundDate" name="inboundDate">
+        <mat-datepicker-toggle matSuffix [for]="inboundPicker"></mat-datepicker-toggle>
+        <mat-datepicker #inboundPicker></mat-datepicker>
       </mat-form-field>
 
       <button type="submit" mat-raised-button color="primary">Search</button>
@@ -55,7 +55,10 @@
 
   <div *ngIf="flights" class="flights-container">
     <div *ngFor="let f of flights">
-      <span>{{f}}</span>
+      <span #header [attr.data-summary]="f">{{f}}</span>
+      <span *ngIf="f.includes('Departure')">
+        <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
+      </span>
     </div>
   </div>
 </div>

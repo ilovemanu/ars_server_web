@@ -369,6 +369,32 @@ public class FlightController {
         }
     }
 
+    public void reserveFlightByFlightNumbersAndSeatClass(ArrayList<String> flightNumbers, String seatClass) {
+        boolean isLocked = false;
+        boolean isReserved = false;
+        boolean isUnlocked = true;
+        String xmlFlights;
+
+        // lock server
+        isLocked = ServerInterface.INSTANCE.lock(teamName);
+
+        // if server locked
+        // update server
+        if (isLocked) {
+            isUnlocked = false;
+            xmlFlights = getXMLByFlightNumbers(flightNumbers, seatClass);
+            isReserved = ServerInterface.INSTANCE.reserveSeat(teamName, xmlFlights);
+
+            // if reservation is successful
+            // unlock server
+            if (isReserved) {
+                isUnlocked = ServerInterface.INSTANCE.unlock(teamName);
+            }
+            // TODO: if isLocked is not successful
+            // TODO: if isReserved is not successful
+        }
+    }
+
     public String getXML(ArrayList<Flight> flightList, String seatClass) {
 
 //      <Flights>
@@ -394,6 +420,25 @@ public class FlightController {
         return res;
     }
 
+    public String getXMLByFlightNumbers(ArrayList<String> flightNumbers, String seatClass) {
+        String head = "<Flights>";
+        String end = "</Flights>";
+        String middle = "";
+        String SEAT_TYPE = "";
+
+        if (seatClass.equalsIgnoreCase("coach")) {
+            SEAT_TYPE = "Coach";
+        } else if (seatClass.equalsIgnoreCase("firstClass")) {
+            SEAT_TYPE = "FirstClass";
+        }
+
+        for (String number : flightNumbers) {
+            middle += "<Flight number=\"" + number + "\" seating=\"" + SEAT_TYPE + "\"/>";
+        }
+        String res = head + middle + end;
+        return res;
+    }
+
     /**
      * Find airport obj by airport code from the hashmap
      */
@@ -406,56 +451,18 @@ public class FlightController {
         }
     }
 
-//    /**
-//     * Get airport object
-//     * @return airports
-//     */
-//    public Airports getAirports() {
-//            storeAirports = ServerInterface.INSTANCE.getAirports(teamName);
-//        return storeAirports;
-//    }
-
-//    /**
-//     * Convert gmt to airport local time
-//     * @param origTime is a list of flights to be converted
-//     * @param zoneID for which time is converted
-//     * @return airport local times
-//     */
-//    public static LocalDateTime convertGmtToLocalTime(LocalDateTime origTime, ZoneId zoneID){
-//
-//        //ZoneId zoneID = AirportZone.getZoneByAirportCode(getAirportByCode(airportCode));
-//        ZoneId gmtZone = ZoneId.of("GMT");
-//
-//        ZonedDateTime gmtTime = ZonedDateTime.of(origTime, gmtZone);
-//        LocalDateTime localTime = gmtTime.withZoneSameInstant(zoneID).toLocalDateTime();
-//
-//        return localTime;
-//    }
-
     /**
-     * Convert the departure and arrival gmt time to the airport local time
-     * @param flightList - the ArrayList<Flight> need to be converted
+     * Filter search results [[Flight]] by user defined parameter
+     *
+     * @param param is the filter parameter defined by user. [all, non-stop, one-stop, two-stop]
+     * @param searchResult is the search result [[Flight]]
+     * @return Filtered results
      */
-//    public void convertToLocal(ArrayList<Flight> flightList) {
-//        String depCode;
-//        String arrCode;
-//        LocalDateTime depGMT;
-//        LocalDateTime arrGMT;
+//    public ArrayList<ArrayList<Flight>> filterByParam(String param, ArrayList<ArrayList<Flight>> searchResult) {
+//        String stopNum;
+//        switch ()
 //
-//        for (Flight f:flightList) {
-//            depCode = f.departureAirport();
-//            arrCode = f.arrivalAirport();
-//            depGMT = f.departureTime();
-//            arrGMT = f.arrivalTime();
 //
-//            // get Airport obj from the hashmap
-//            Airport depAirport = airportMap.get(depCode);
-//            Airport arrAirport = airportMap.get(arrCode);
-//
-//            // convert by Airport
-//            f.departureTime(TimeConverter.convertTimeByAirport(depGMT,depAirport));
-//            f.arrivalTime(TimeConverter.convertTimeByAirport(arrGMT,arrAirport));
-//
-//        }
+//        return filtredRes
 //    }
 }
