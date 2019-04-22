@@ -55,7 +55,7 @@
     </form>
   </section>
 
-  <div *ngIf="flights" class="flights-container">
+  <div *ngIf="flights && !loading" class="flights-container">
     <mat-form-field>
       <mat-label>Sort Search Results</mat-label>
       <select matNativeControl [(ngModel)]="sortParam" name="sortParam" (change)="onSortChange($event.target.value)">
@@ -81,6 +81,9 @@
         <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
       </span>
     </div>
+  </div>
+  <div *ngIf="loading">
+    <mat-spinner></mat-spinner>
   </div>
 </div>
 
