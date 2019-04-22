@@ -75,14 +75,28 @@
       </select>
     </mat-form-field>
 
+
+    <div *ngIf="tripType == 'roundTrip'">
+      <button type="submit" mat-raised-button color="primary" (click)="reserveRoundTrip(header.dataset.summary)">Reserve</button>
+    </div>
     <div *ngFor="let f of flights">
-      <span #header [attr.data-summary]="f">{{f}}</span>
-      <span *ngIf="f.includes('Departure') && !reserved">
-        <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
-      </span>
+      <div *ngIf="tripType == 'oneWay'">
+        <span #header [attr.data-summary]="f">{{f}}</span>
+          <span *ngIf="f.includes('Departure') && !reserved">
+          <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
+        </span>
+      </div>
+      <div *ngIf="tripType == 'roundTrip'">
+        <span #header [attr.data-summary]="f">{{f}}</span>
+        <span *ngIf="f.includes('Departure') && !reserved" class="reserve-checkbox-container">
+
+          <mat-checkbox (change)="updateChecked(header.dataset.summary, $event)"></mat-checkbox>
+        </span>
+      </div>
+
     </div>
   </div>
-  <div *ngIf="loading">
+  <div *ngIf="loading" class="spinner-container">
     <mat-spinner></mat-spinner>
   </div>
 </div>

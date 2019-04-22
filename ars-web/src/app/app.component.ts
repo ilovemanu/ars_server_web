@@ -1,12 +1,13 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ApiService} from './service/api.service';
+import {del} from "selenium-webdriver/http";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'ars-web';
   flights: string[];
   returnedResults: string[];
@@ -20,14 +21,33 @@ export class AppComponent {
   outboundDate: string;
 
   reservationMessage: string;
-  sortParam = 'travelTime';
-  filterParam = 'all';
+  // sortParam = 'travelTime';
+  // filterParam = 'all';
+  //
+  // searchDisabled = false;
+  // loading = false;
+  // reserved = false;
+  // roundTripMessages = [];
 
-  searchDisabled = false;
-  loading = false;
-  reserved = false;
+  sortParam: string;
+  filterParam: string;
+
+  searchDisabled: boolean;
+  loading: boolean;
+  reserved: boolean;
+  roundTripMessages: string[];
 
   constructor(private api: ApiService) {
+  }
+
+  ngOnInit(): void {
+    this.sortParam = 'travelTime';
+    this.filterParam = 'all';
+
+    this.searchDisabled = false;
+    this.loading = false;
+    this.reserved = false;
+    this.roundTripMessages = [];
   }
 
 
@@ -66,6 +86,32 @@ export class AppComponent {
         console.log(this.seatClass);
       }
     });
+  }
+
+  reserveRoundTrip() {
+    this.loading = true;
+    this.api.reserveRoundTrip(this.roundTripMessages, this.seatClass).subscribe(data => {
+      this.loading = false;
+      this.reserved = true;
+      if (data) {
+        this.flights = data;
+        console.log(this.reservationMessage);
+        console.log(this.seatClass);
+      }
+    });
+
+  }
+
+  updateChecked(message, event) {
+    if (event.checked) {
+      this.roundTripMessages.push(message);
+      console.log(this.roundTripMessages);
+    } else {
+      // delete this.roundTripMessages[message];
+      this.roundTripMessages = this.roundTripMessages.filter(m => m !== message);
+      console.log(this.roundTripMessages);
+    }
+
   }
 
   onSortChange(sortParam: string) {
