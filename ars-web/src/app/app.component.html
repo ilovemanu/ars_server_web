@@ -63,6 +63,15 @@
         <option value="totalPrice">Total Price</option>
       </select>
     </mat-form-field>
+    <mat-form-field class="filter-container">
+      <mat-label>Filter Search Results</mat-label>
+      <select matNativeControl [(ngModel)]="filtertParam" name="filtertParam" (change)="onFilterChange($event.target.value)">
+        <option value="all" selected="selected">All</option>
+        <option value="0">None Stop</option>
+        <option value="1">1 Stop</option>
+        <option value="2">2 Stops</option>
+      </select>
+    </mat-form-field>
 
     <div *ngFor="let f of flights">
       <span #header [attr.data-summary]="f">{{f}}</span>

@@ -9,7 +9,8 @@ import {ApiService} from './service/api.service';
 export class AppComponent {
   title = 'ars-web';
   flights: string[];
-  listFlights: Flight[][];
+  returnedResults: string[];
+  // listFlights: Flight[][];
   inboundDate: string;
   tripType: string;
 
@@ -66,6 +67,10 @@ export class AppComponent {
           this.flights = data;
         });
     }
+
+  }
+
+  onFilterChange(filterParam: string) {
 
   }
 }
