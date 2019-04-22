@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {ApiService} from './service/api.service';
-import {del} from "selenium-webdriver/http";
 
 @Component({
   selector: 'app-root',
@@ -21,14 +20,6 @@ export class AppComponent implements OnInit {
   outboundDate: string;
 
   reservationMessage: string;
-  // sortParam = 'travelTime';
-  // filterParam = 'all';
-  //
-  // searchDisabled = false;
-  // loading = false;
-  // reserved = false;
-  // roundTripMessages = [];
-
   sortParam: string;
   filterParam: string;
 
@@ -107,11 +98,9 @@ export class AppComponent implements OnInit {
       this.roundTripMessages.push(message);
       console.log(this.roundTripMessages);
     } else {
-      // delete this.roundTripMessages[message];
       this.roundTripMessages = this.roundTripMessages.filter(m => m !== message);
       console.log(this.roundTripMessages);
     }
-
   }
 
   onSortChange(sortParam: string) {

@@ -21,8 +21,6 @@
         </select>
       </mat-form-field>
 
-
-
       <mat-form-field class="example-full-width">
         <input matInput placeholder="Departure" [(ngModel)]="departureAirPort" name="departureAirPort" required>
       </mat-form-field>
@@ -41,7 +39,6 @@
         <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
         <mat-datepicker #departurePicker></mat-datepicker>
       </mat-form-field>
-
 
       <mat-form-field *ngIf="tripType === 'roundTrip'">
         <input matInput [matDatepicker]="inboundPicker" placeholder="Inbound Date" [(ngModel)]="inboundDate"
@@ -67,7 +64,7 @@
     </mat-form-field>
     <mat-form-field class="filter-container">
       <mat-label>Filter Search Results</mat-label>
-      <select matNativeControl [(ngModel)]="filtertParam" name="filtertParam" (change)="onFilterChange($event.target.value)">
+      <select matNativeControl [(ngModel)]="filterParam" name="filtertParam" (change)="onFilterChange($event.target.value)">
         <option value="all" selected="selected">All</option>
         <option value="1">None Stop</option>
         <option value="2">1 Stop</option>
@@ -75,23 +72,25 @@
       </select>
     </mat-form-field>
 
-
     <div *ngIf="tripType == 'roundTrip'">
-      <button type="submit" mat-raised-button color="primary" (click)="reserveRoundTrip(header.dataset.summary)">Reserve</button>
+      <button type="submit" mat-raised-button color="primary" (click)="reserveRoundTrip()">Reserve</button>
     </div>
     <div *ngFor="let f of flights">
       <div *ngIf="tripType == 'oneWay'">
-        <span #header [attr.data-summary]="f">{{f}}</span>
+        <mat-card>
+          <span #header [attr.data-summary]="f">{{f}}</span>
           <span *ngIf="f.includes('Departure') && !reserved">
           <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
         </span>
+        </mat-card>
       </div>
       <div *ngIf="tripType == 'roundTrip'">
-        <span #header [attr.data-summary]="f">{{f}}</span>
-        <span *ngIf="f.includes('Departure') && !reserved" class="reserve-checkbox-container">
-
+        <mat-card>
+          <span #header [attr.data-summary]="f">{{f}}</span>
+          <span *ngIf="f.includes('Departure') && !reserved" class="reserve-checkbox-container">
           <mat-checkbox (change)="updateChecked(header.dataset.summary, $event)"></mat-checkbox>
         </span>
+        </mat-card>
       </div>
 
     </div>

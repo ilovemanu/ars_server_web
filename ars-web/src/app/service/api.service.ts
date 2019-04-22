@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {DatePipe} from '@angular/common';
 
@@ -50,37 +50,11 @@ export class ApiService {
   }
 
   public reserveRoundTrip(roundTripMessages: string[], seatClass: string): Observable<string[]> {
-    let roundTripFlightNumber = roundTripMessages.map(
-      m => {
-        const flightNumbers = m.split(',').pop();
-        let flightNumbersOnly = flightNumbers.split(':').pop().split(' ');
-        flightNumbersOnly = flightNumbersOnly.filter(x => x);
-
-        console.log('flightNumbers: ' + flightNumbers);
-        console.log('flightNumbersOnly: ' + flightNumbersOnly);
-
-        return flightNumbersOnly.join('-');
-      }
+    return this.http.post<string[]>(
+      `${this.departureDateUrl}/round-trip/reserve/${seatClass}/`,
+      {roundTripMessages: roundTripMessages}
     );
-
-    console.log(roundTripFlightNumber);
-    roundTripFlightNumber.join(',');
-    console.log(roundTripFlightNumber);
-
-    // const flightNumbers = message.split(',').pop();
-    // let flightNumbersOnly = flightNumbers.split(':').pop().split(' ');
-    // flightNumbersOnly = flightNumbersOnly.filter(x => x);
-    //
-    // console.log('flightNumbers: ' + flightNumbers);
-    // console.log('flightNumbersOnly: ' + flightNumbersOnly);
-
-    // const paramFlightNumbers = flightNumbersOnly.join('-');
-
-    console.log(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
-
-    return this.http.get<string[]>(`${this.departureDateUrl}/${seatClass}/${message}/${paramFlightNumbers}`);
   }
-
 
 
   public onSortFilterOneWay(seatClass: string, departureAirPort: string, arrivalAirPort: string,
