@@ -25,6 +25,7 @@ export class AppComponent {
 
   searchDisabled = false;
   loading = false;
+  reserved = false;
 
   constructor(private api: ApiService) {
   }
@@ -32,6 +33,7 @@ export class AppComponent {
 
   onSubmit() {
     this.loading = true;
+    this.reserved = false;
     if (this.tripType === 'oneWay') {
       // seatClass: string, departureAirPort: string, arrivalAirPort: string, outboundDate: string
       this.api.searchOneWay(this.seatClass, this.departureAirPort, this.arrivalAirPort, this.outboundDate).subscribe(data => {
@@ -57,6 +59,7 @@ export class AppComponent {
     this.loading = true;
     this.api.reserve(message, this.seatClass).subscribe(data => {
       this.loading = false;
+      this.reserved = true;
       if (data) {
         this.flights = data;
         console.log(this.reservationMessage);
@@ -69,6 +72,7 @@ export class AppComponent {
     this.sortParam = sortParam;
     // this.flights = null;
     this.loading = true;
+    this.reserved = false;
     if (this.tripType === 'oneWay') {
       this.api.onSortFilterOneWay(this.seatClass, this.departureAirPort, this.arrivalAirPort,
         this.outboundDate, this.sortParam, this.filterParam)
@@ -88,6 +92,7 @@ export class AppComponent {
   }
 
   onFilterChange(filterParam: string) {
+    this.reserved = false;
     this.filterParam = filterParam;
     // this.flights = null;
     this.loading = true;

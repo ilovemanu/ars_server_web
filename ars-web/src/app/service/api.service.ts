@@ -46,7 +46,7 @@ export class ApiService {
 
     console.log(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
 
-    return this.http.get<string[]>(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
+    return this.http.get<string[]>(`${this.departureDateUrl}/${seatClass}/${message}/${paramFlightNumbers}`);
 
   }
 

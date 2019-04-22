@@ -83,9 +83,9 @@ public class ARSRequestController {
     }
 
 
-    @GetMapping(path = "/{seatClass}/{flightNumbers}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{seatClass}/{message}/{flightNumbers}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<String> reserveFlights(@PathVariable String seatClass, @PathVariable String flightNumbers) {
+    public List<String> reserveFlights(@PathVariable String seatClass,  @PathVariable String message, @PathVariable String flightNumbers) {
         List<String> results = new ArrayList<>();
         try {
             FlightController controller = new FlightController();
@@ -102,6 +102,7 @@ public class ARSRequestController {
         }
 
         results.add("Flight(s) reservation succeeded!");
+        results.add(message);
         return results;
 
 
@@ -137,7 +138,7 @@ public class ARSRequestController {
         ArrayList<ArrayList<Flight>> outFlights;
 
         FlightController controller = new FlightController();
-        outFlights = controller.searchDepTimeFlight(departureAirPort, outboundDate, arrivalAirPort, seatClass, outboundDate);
+        outFlights = controller.searchDepTimeFlight(departureAirPort.toUpperCase(), outboundDate, arrivalAirPort.toUpperCase(), seatClass, outboundDate);
         controller.sortByParam(sortParam, outFlights, seatClass);
 
         for (ArrayList<Flight> flightList : outFlights) {

@@ -77,7 +77,7 @@
 
     <div *ngFor="let f of flights">
       <span #header [attr.data-summary]="f">{{f}}</span>
-      <span *ngIf="f.includes('Departure')">
+      <span *ngIf="f.includes('Departure') && !reserved">
         <button type="submit" mat-raised-button color="primary" (click)="reserve(header.dataset.summary)">Reserve</button>
       </span>
     </div>
