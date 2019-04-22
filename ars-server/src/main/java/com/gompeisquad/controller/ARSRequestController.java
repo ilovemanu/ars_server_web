@@ -1,7 +1,6 @@
 package com.gompeisquad.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +22,18 @@ public class ARSRequestController {
     @GetMapping("/one-way/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}")
     @ResponseBody
     public List<String> searchOneWay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort, @PathVariable String outboundDate) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate);
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime");
+        results.add("END OF OUTBOUND!");
+        results.add("-----------------------------------");
+
+        return results;
+    }
+
+    @GetMapping("/one-way/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{sortParam}")
+    @ResponseBody
+    public List<String> sortOneWay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort,
+                                   @PathVariable String outboundDate, @PathVariable String sortParam) {
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam);
         results.add("END OF OUTBOUND!");
         results.add("-----------------------------------");
 
@@ -41,11 +51,30 @@ public class ARSRequestController {
     @ResponseBody
     public List<String> searchRoundTrip(@PathVariable String seatClass, @PathVariable String departureAirPort,
                                         @PathVariable String arrivalAirPort, @PathVariable String outboundDate, @PathVariable String inboundDate) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate);
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime");
         results.add("END OF OUTBOUND!");
         results.add("----------------------------------------------------------------------");
 
-        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate);
+        // default sort by travel time
+        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, "travelTime");
+        inboundResults.add("END OF INBOUND!");
+        inboundResults.add("----------------------------------------------------------------------");
+
+        results.addAll(inboundResults);
+        return results;
+    }
+
+    @GetMapping("/round-trip/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{inboundDate}/{sortParam}")
+    @ResponseBody
+    public List<String> sortRoundTrip(@PathVariable String seatClass, @PathVariable String departureAirPort,
+                                        @PathVariable String arrivalAirPort, @PathVariable String outboundDate,
+                                        @PathVariable String inboundDate, @PathVariable String sortParam) {
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam);
+        results.add("END OF OUTBOUND!");
+        results.add("----------------------------------------------------------------------");
+
+        // default sort by travel time
+        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, sortParam);
         inboundResults.add("END OF INBOUND!");
         inboundResults.add("----------------------------------------------------------------------");
 
@@ -56,7 +85,8 @@ public class ARSRequestController {
 
     @GetMapping(path = "/{seatClass}/{flightNumbers}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String reserveFlights(@PathVariable String seatClass, @PathVariable String flightNumbers) {
+    public List<String> reserveFlights(@PathVariable String seatClass, @PathVariable String flightNumbers) {
+        List<String> results = new ArrayList<>();
         try {
             FlightController controller = new FlightController();
             String[] arrFligthNumber = flightNumbers.split("-");
@@ -66,10 +96,13 @@ public class ARSRequestController {
             controller.reserveFlightByFlightNumbersAndSeatClass(lFlightNumbers, seatClass);
         } catch (Exception e) {
             System.out.println(e.toString());
-            return "Error happened during reservation!";
+
+            results.add("Error happened during reservation!");
+            return results;
         }
 
-        return "Flight(s) reservation succeeded!";
+        results.add("Flight(s) reservation succeeded!");
+        return results;
 
 
         //return this.http.get<string[]>(`${this.departureDateUrl}/${seatClass}/${flightNumbersOnly}`);
@@ -96,14 +129,16 @@ public class ARSRequestController {
      * @param departureAirPort
      * @param arrivalAirPort
      * @param outboundDate
+     * @param sortParam
      * @return
      */
-    private List<String> searchDepartFlightsForDisplay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort, @PathVariable String outboundDate) {
+    private List<String> searchDepartFlightsForDisplay(String seatClass, String departureAirPort, String arrivalAirPort, String outboundDate, String sortParam) {
         List<String> results = new ArrayList<>();
         ArrayList<ArrayList<Flight>> outFlights;
 
         FlightController controller = new FlightController();
         outFlights = controller.searchDepTimeFlight(departureAirPort, outboundDate, arrivalAirPort, seatClass, outboundDate);
+        controller.sortByParam(sortParam, outFlights, seatClass);
 
         for (ArrayList<Flight> flightList : outFlights) {
             List<String> info = FlightController.getInfo(flightList, seatClass);

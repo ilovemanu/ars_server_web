@@ -54,6 +54,16 @@
   </section>
 
   <div *ngIf="flights" class="flights-container">
+    <mat-form-field>
+      <mat-label>Sort Search Results</mat-label>
+      <select matNativeControl [(ngModel)]="sortParam" name="sortParam" (change)="onSortChange($event.target.value)">
+        <option value="travelTime" selected="selected">Travel Time</option>
+        <option value="depTime">Departure Time</option>
+        <option value="arrTime">Arrival Time</option>
+        <option value="totalPrice">Total Price</option>
+      </select>
+    </mat-form-field>
+
     <div *ngFor="let f of flights">
       <span #header [attr.data-summary]="f">{{f}}</span>
       <span *ngIf="f.includes('Departure')">

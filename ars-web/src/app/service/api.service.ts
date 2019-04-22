@@ -34,7 +34,7 @@ export class ApiService {
       `${this.departureDateUrl}/round-trip/${seatClass}/${departureAirPort}/${arrivalAirPort}/${departDate}/${roundTripInboundDate}`);
   }
 
-  public reserve(message: string, seatClass: string) {
+  public reserve(message: string, seatClass: string): Observable<string[]> {
     const flightNumbers = message.split(',').pop();
     let flightNumbersOnly = flightNumbers.split(':').pop().split(' ');
     flightNumbersOnly = flightNumbersOnly.filter(x => x);
@@ -46,11 +46,22 @@ export class ApiService {
 
     console.log(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
 
-    return this.http.get<string>(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
+    return this.http.get<string[]>(`${this.departureDateUrl}/${seatClass}/${paramFlightNumbers}`);
 
   }
 
-  // public save(user: User) {
-  //   return this.http.post<User>(this.usersUrl, user);
-  // }
+  public onSortOneWay(seatClass: string, departureAirPort: string, arrivalAirPort: string, outboundDate: string, sortParam: string) {
+    const departDate = this.datePipe.transform(outboundDate, 'yyyy_MM_dd');
+    return this.http.get<string[]>(
+      `${this.departureDateUrl}/one-way/${seatClass}/${departureAirPort}/${arrivalAirPort}/${departDate}/${sortParam}`);
+  }
+
+  public onSortRoundTrip(seatClass: string, departureAirPort: string, arrivalAirPort: string, outboundDate: string,
+                         inboundDate: string, sortParam: string): Observable<string[]> {
+    const departDate = this.datePipe.transform(outboundDate, 'yyyy_MM_dd');
+    const roundTripInboundDate = this.datePipe.transform(inboundDate, 'yyyy_MM_dd');
+
+    return this.http.get<string[]>(
+      `${this.departureDateUrl}/round-trip/${seatClass}/${departureAirPort}/${arrivalAirPort}/${departDate}/${roundTripInboundDate}/${sortParam}`);
+  }
 }
