@@ -3,6 +3,7 @@ package com.gompeisquad.parser.flight;
 import java.util.ArrayList;
 
 public class SearchResultForDisplay {
+    //TODO need 2 list, inbound flight list and outbound
     private ArrayList<Flight> flightList;
     private String resultSummay;
     private String seatClass;

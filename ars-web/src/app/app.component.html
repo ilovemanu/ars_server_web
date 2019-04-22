@@ -7,7 +7,7 @@
     <form class="search-form" (ngSubmit)="onSubmit()" #inputForm="ngForm">
       <mat-form-field>
         <mat-label>One Way Or Round Trip</mat-label>
-        <select matNativeControl [(ngModel)]="tripType" name="tripType">
+        <select matNativeControl [(ngModel)]="tripType" name="tripType" required>
           <option value="roundTrip" selected="selected">Round Trip</option>
           <option value="oneWay">One Way</option>
         </select>
@@ -15,7 +15,7 @@
 
       <mat-form-field>
         <mat-label>Seat Class</mat-label>
-        <select matNativeControl [(ngModel)]="seatClass" name="seatClass">
+        <select matNativeControl [(ngModel)]="seatClass" name="seatClass" required>
           <option value="coach" selected="selected">Coach</option>
           <option value="firstClass">First Class</option>
         </select>
@@ -24,11 +24,11 @@
 
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Departure" [(ngModel)]="departureAirPort" name="departureAirPort">
+        <input matInput placeholder="Departure" [(ngModel)]="departureAirPort" name="departureAirPort" required>
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
-        <input matInput placeholder="Arriving" [(ngModel)]="arrivalAirPort" name="arrivalAirPort">
+        <input matInput placeholder="Arriving" [(ngModel)]="arrivalAirPort" name="arrivalAirPort" required>
       </mat-form-field>
 
       <!--<mat-form-field class="example-full-width">-->
@@ -36,19 +36,21 @@
       <!--</mat-form-field>-->
 
       <mat-form-field>
-        <input matInput [matDatepicker]="departurePicker" placeholder="Outbound Date" [(ngModel)]="outboundDate" name="outboundDate">
+        <input matInput [matDatepicker]="departurePicker" placeholder="Outbound Date" [(ngModel)]="outboundDate"
+               name="outboundDate" (dateChange)="onOutboundDateChange($event.target.value)" required>
         <mat-datepicker-toggle matSuffix [for]="departurePicker"></mat-datepicker-toggle>
         <mat-datepicker #departurePicker></mat-datepicker>
       </mat-form-field>
 
 
       <mat-form-field *ngIf="tripType === 'roundTrip'">
-        <input matInput [matDatepicker]="inboundPicker" placeholder="Inbound Date" [(ngModel)]="inboundDate" name="inboundDate">
+        <input matInput [matDatepicker]="inboundPicker" placeholder="Inbound Date" [(ngModel)]="inboundDate"
+               name="inboundDate" (dateChange)="onInboundDateChange($event.target.value)">
         <mat-datepicker-toggle matSuffix [for]="inboundPicker"></mat-datepicker-toggle>
         <mat-datepicker #inboundPicker></mat-datepicker>
       </mat-form-field>
 
-      <button type="submit" mat-raised-button color="primary">Search</button>
+      <button [disabled]="isDisabled()" type="submit" mat-raised-button color="primary">Search</button>
 
     </form>
   </section>
@@ -67,9 +69,9 @@
       <mat-label>Filter Search Results</mat-label>
       <select matNativeControl [(ngModel)]="filtertParam" name="filtertParam" (change)="onFilterChange($event.target.value)">
         <option value="all" selected="selected">All</option>
-        <option value="0">None Stop</option>
-        <option value="1">1 Stop</option>
-        <option value="2">2 Stops</option>
+        <option value="1">None Stop</option>
+        <option value="2">1 Stop</option>
+        <option value="3">2 Stops</option>
       </select>
     </mat-form-field>
 

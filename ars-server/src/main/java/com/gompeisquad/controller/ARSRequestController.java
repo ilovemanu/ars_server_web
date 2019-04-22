@@ -22,18 +22,18 @@ public class ARSRequestController {
     @GetMapping("/one-way/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}")
     @ResponseBody
     public List<String> searchOneWay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort, @PathVariable String outboundDate) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime");
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime", "all");
         results.add("END OF OUTBOUND!");
         results.add("-----------------------------------");
 
         return results;
     }
 
-    @GetMapping("/one-way/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{sortParam}")
+    @GetMapping("/one-way/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{sortParam}/{filterParam}")
     @ResponseBody
-    public List<String> sortOneWay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort,
-                                   @PathVariable String outboundDate, @PathVariable String sortParam) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam);
+    public List<String> sortFilterOneWay(@PathVariable String seatClass, @PathVariable String departureAirPort, @PathVariable String arrivalAirPort,
+                                         @PathVariable String outboundDate, @PathVariable String sortParam, @PathVariable String filterParam) {
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam, filterParam);
         results.add("END OF OUTBOUND!");
         results.add("-----------------------------------");
 
@@ -51,12 +51,12 @@ public class ARSRequestController {
     @ResponseBody
     public List<String> searchRoundTrip(@PathVariable String seatClass, @PathVariable String departureAirPort,
                                         @PathVariable String arrivalAirPort, @PathVariable String outboundDate, @PathVariable String inboundDate) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime");
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, "travelTime", "all");
         results.add("END OF OUTBOUND!");
         results.add("----------------------------------------------------------------------");
 
         // default sort by travel time
-        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, "travelTime");
+        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, "travelTime", "all");
         inboundResults.add("END OF INBOUND!");
         inboundResults.add("----------------------------------------------------------------------");
 
@@ -64,17 +64,17 @@ public class ARSRequestController {
         return results;
     }
 
-    @GetMapping("/round-trip/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{inboundDate}/{sortParam}")
+    @GetMapping("/round-trip/{seatClass}/{departureAirPort}/{arrivalAirPort}/{outboundDate}/{inboundDate}/{sortParam}/{filterParam}")
     @ResponseBody
-    public List<String> sortRoundTrip(@PathVariable String seatClass, @PathVariable String departureAirPort,
-                                        @PathVariable String arrivalAirPort, @PathVariable String outboundDate,
-                                        @PathVariable String inboundDate, @PathVariable String sortParam) {
-        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam);
+    public List<String> sortFilterRoundTrip(@PathVariable String seatClass, @PathVariable String departureAirPort,
+                                            @PathVariable String arrivalAirPort, @PathVariable String outboundDate,
+                                            @PathVariable String inboundDate, @PathVariable String sortParam, @PathVariable String filterParam) {
+        List<String> results = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, outboundDate, sortParam, filterParam);
         results.add("END OF OUTBOUND!");
         results.add("----------------------------------------------------------------------");
 
         // default sort by travel time
-        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, sortParam);
+        List<String> inboundResults = searchDepartFlightsForDisplay(seatClass, departureAirPort, arrivalAirPort, inboundDate, sortParam, filterParam);
         inboundResults.add("END OF INBOUND!");
         inboundResults.add("----------------------------------------------------------------------");
 
@@ -132,7 +132,7 @@ public class ARSRequestController {
      * @param sortParam
      * @return
      */
-    private List<String> searchDepartFlightsForDisplay(String seatClass, String departureAirPort, String arrivalAirPort, String outboundDate, String sortParam) {
+    private List<String> searchDepartFlightsForDisplay(String seatClass, String departureAirPort, String arrivalAirPort, String outboundDate, String sortParam, String filterParam) {
         List<String> results = new ArrayList<>();
         ArrayList<ArrayList<Flight>> outFlights;
 
@@ -142,23 +142,26 @@ public class ARSRequestController {
 
         for (ArrayList<Flight> flightList : outFlights) {
             List<String> info = FlightController.getInfo(flightList, seatClass);
-            String output = String.format("Departure: %s, Arrival: %s, Duration: %s mins, Price: $%s, Flight Number:", info.get(0), info.get(1), info.get(2), info.get(3));
-            for(Flight f : flightList) {
-                output += " ";
-                output += f.number();
+
+            if (filterParam.equalsIgnoreCase("all") || filterParam.equals(String.valueOf(flightList.size()))) {
+                String output = String.format("Departure: %s, Arrival: %s, Duration: %s mins, Price: $%s, Flight Number:", info.get(0), info.get(1), info.get(2), info.get(3));
+                for (Flight f : flightList) {
+                    output += " ";
+                    output += f.number();
+                }
+
+                results.add(output);
+
+                for (Flight f : flightList) {
+                    results.add(f.toLocalString());
+                }
+                results.add("--");
             }
 
-            results.add(output);
 
-            for (Flight f : flightList) {
-                results.add(f.toLocalString());
-            }
-
-            results.add("--");
         }
         return results;
     }
-
 
 
     /**

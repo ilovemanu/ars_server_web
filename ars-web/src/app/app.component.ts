@@ -20,6 +20,10 @@ export class AppComponent {
   outboundDate: string;
 
   reservationMessage: string;
+  sortParam = 'travelTime';
+  filterParam = 'all';
+
+  searchDisabled = false;
 
   constructor(private api: ApiService) {
   }
@@ -56,13 +60,17 @@ export class AppComponent {
   }
 
   onSortChange(sortParam: string) {
+    this.sortParam = sortParam;
+    this.flights = null;
     if (this.tripType === 'oneWay') {
-      this.api.onSortOneWay(this.seatClass, this.departureAirPort, this.arrivalAirPort, this.outboundDate, sortParam)
+      this.api.onSortFilterOneWay(this.seatClass, this.departureAirPort, this.arrivalAirPort,
+        this.outboundDate, this.sortParam, this.filterParam)
         .subscribe(data => {
           this.flights = data;
         });
     } else {
-      this.api.onSortRoundTrip(this.seatClass, this.departureAirPort, this.arrivalAirPort, this.outboundDate, this.inboundDate, sortParam)
+      this.api.onSortFilterRoundTrip(this.seatClass, this.departureAirPort, this.arrivalAirPort,
+        this.outboundDate, this.inboundDate, this.sortParam, this.filterParam)
         .subscribe(data => {
           this.flights = data;
         });
@@ -71,6 +79,33 @@ export class AppComponent {
   }
 
   onFilterChange(filterParam: string) {
+    this.filterParam = filterParam;
+    this.flights = null;
+    if (this.tripType === 'oneWay') {
+      this.api.onSortFilterOneWay(this.seatClass, this.departureAirPort, this.arrivalAirPort,
+        this.outboundDate, this.sortParam, this.filterParam)
+        .subscribe(data => {
+          this.flights = data;
+        });
+    } else {
+      this.api.onSortFilterRoundTrip(this.seatClass, this.departureAirPort, this.arrivalAirPort,
+        this.outboundDate, this.inboundDate, this.sortParam, this.filterParam)
+        .subscribe(data => {
+          this.flights = data;
+        });
+    }
+  }
 
+  onOutboundDateChange() {
+    this.searchDisabled = this.inboundDate < this.outboundDate;
+  }
+
+  onInboundDateChange() {
+    // if one way trip, inboundDate is undefined, the compare always returns false;
+    this.searchDisabled = this.inboundDate < this.outboundDate;
+  }
+
+  isDisabled(): boolean {
+    return this.searchDisabled;
   }
 }
